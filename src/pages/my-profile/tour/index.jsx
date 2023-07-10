@@ -1,9 +1,9 @@
-import MainTable from '@/components/Table/MainTable'
-import MainTabs from '@/components/Tabs'
+import React from 'react'
 import { SearchOutlined } from '@ant-design/icons'
 import { Button, Form, Row, Input } from 'antd'
 import { useRouter } from 'next/router'
-import React from 'react'
+import MainTable from '@/components/Table/MainTable'
+import MainTabs from '@/components/Tabs'
 const { Search } = Input
 
 const TourList = () => {

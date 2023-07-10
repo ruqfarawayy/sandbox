@@ -1,47 +1,53 @@
 {
-  "name": "sandbox",
+  "name": "kostzy-backoffice",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev:windows": "npx env-cmd -x next dev -p $PORT",
+    "dev": "npx env-cmd -x next dev -p '$PORT'",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "npx env-cmd -x next start -p '$PORT'",
+    "lint": "next lint",
+    "prettier:src": "npx prettier --config .prettierrc --write ./src",
+    "fix": "npx eslint --fix ./src --ext .js --ext .jsx"
   },
   "dependencies": {
-    "@ant-design/cssinjs": "^1.5.6",
-    "@ant-design/icons": "^5.1.4",
-    "@next/font": "13.1.6",
-    "ahooks": "^3.7.4",
-    "antd": "^5.1.7",
+    "@ant-design/icons": "^5.0.1",
+    "antd": "^5.6.4",
     "axios": "^1.4.0",
     "case": "^1.6.3",
-    "crypto-js": "^4.1.1",
-    "dayjs": "^1.11.7",
-    "eslint": "^8.40.0",
-    "eslint-config-next": "^13.4.2",
-    "html-to-text": "^9.0.5",
+    "dayjs": "^1.11.9",
     "iron-session": "^6.3.1",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
-    "moment": "^2.29.4",
-    "next": "13.1.6",
-    "next-http-proxy-middleware": "^1.2.5",
+    "next": "13.2.4",
     "prop-types": "^15.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-json-view": "^1.21.3",
     "react-leaflet": "^4.2.1",
     "react-quill": "^2.0.0",
-    "request": "^2.88.2",
     "sass": "^1.63.6",
-    "swiper": "^9.3.2",
+    "styled-components": "^6.0.2",
     "use-media-antd-query": "^1.1.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.14",
-    "axios-mock-adapter": "^1.21.4",
-    "postcss": "^8.4.23",
-    "tailwindcss": "^3.3.2"
+    "@ant-design/cssinjs": "^1.11.1",
+    "axios-mock-adapter": "^1.21.5",
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.44.0",
+    "eslint-config-next": "^13.4.9",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-unicorn": "^47.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "prettier": "^3.0.0",
+    "yarn-upgrade-all": "^0.7.2"
+  },
+  "yarn-upgrade-all": {
+    "ignore": [
+      "react",
+      "react-dom",
+      "next"
+    ]
   }
 }

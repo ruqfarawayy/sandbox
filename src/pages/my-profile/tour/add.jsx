@@ -1,10 +1,9 @@
 // import MapComps from '@/components/MapComp'
-import Map from '@/components/Map'
-import QuillEditor from '@/components/QuillEditor'
-import MainTabs from '@/components/Tabs'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Col, Form, Input, Row, Space, Typography, Upload } from 'antd'
 import { useRouter } from 'next/router'
+import QuillEditor from '@/components/QuillEditor'
+import MainTabs from '@/components/Tabs'
 const { Search } = Input
 const { Title } = Typography
 
@@ -55,9 +54,7 @@ const AddTour = () => {
 							<Form.Item name="address" label="Alamat">
 								<Input placeholder="Masukkan alamat" />
 							</Form.Item>
-							<Form.Item>
-								{/* <Map center={center} /> */}
-							</Form.Item>
+							<Form.Item>{/* <Map center={center} /> */}</Form.Item>
 							<Form.Item>
 								<Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
 									<Button shape="round" size="large" onClick={() => router.push('/my-profile/tour')}>

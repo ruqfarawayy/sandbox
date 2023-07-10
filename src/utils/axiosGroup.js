@@ -37,7 +37,12 @@ const axiosGroup = async (axiosRequests) => {
 							config: { url }
 						}
 					} = err
-					const _res = { status, url, response: undefined, error: { response: { status, data } } }
+					const _res = {
+						status,
+						url,
+						response: undefined,
+						error: { response: { status, data: typeof data !== 'string' ? data : { message: 'unknown server error!' } } }
+					}
 					return _res
 				})
 		)

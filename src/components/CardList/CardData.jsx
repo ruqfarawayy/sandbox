@@ -1,5 +1,5 @@
-import idrFormatter from '@/utils/idrFormatter'
 import { Card, Tag, Image } from 'antd'
+import idrFormatter from '@/utils/idrFormatter'
 const { Meta } = Card
 
 const CardData = ({ item }) => {

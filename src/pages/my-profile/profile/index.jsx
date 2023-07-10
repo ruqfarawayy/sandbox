@@ -2,8 +2,14 @@ import { Avatar, Button, Col, Form, Input, Row, Typography } from 'antd'
 import React from 'react'
 import { UserOutlined } from '@ant-design/icons'
 import MainTabs from '@/components/Tabs'
+import { withSession } from '@/utils/session-wrapper'
+import axiosGroup from '@/utils/axiosGroup'
+import routeGuard from '@/utils/route-guard'
+import { getUserProfile } from '@/services/profile'
+import ErrorPanel from '@/components/ErrorPanel'
 const { Title, Text } = Typography
-const Profile = () => {
+const Profile = ({ profileData, errors }) => {
+
 	const dataProfile = {
 		name: 'Sumirah',
 		email: 'sumirah@gmail.com',
@@ -13,14 +19,15 @@ const Profile = () => {
 	const [form] = Form.useForm()
 	const profileDetail = (
 		<>
+			<ErrorPanel errors={errors} />
 			<Row style={{ padding: '0 50px' }}>
 				<Col span={2}>
 					<Avatar size={64} icon={<UserOutlined />} />
 				</Col>
 				<Col span={14}>
 					<div>
-						<Title>{dataProfile.name}</Title>
-						<Text>{dataProfile.address}</Text>
+						<Title>{profileData.username}</Title>
+						<Text>{profileData.address}</Text>
 					</div>
 				</Col>
 				<Col>
@@ -30,8 +37,8 @@ const Profile = () => {
 				</Col>
 			</Row>
 			<div style={{ padding: '0 50px', marginTop: '1rem' }}>
-				<Form layout="vertical" wrapperCol={{ span: 18 }} form={form} initialValues={dataProfile}>
-					<Form.Item name="name" label="Nama">
+				<Form layout="vertical" wrapperCol={{ span: 18 }} form={form} initialValues={profileData}>
+					<Form.Item name="full_name" label="Nama">
 						<Input />
 					</Form.Item>
 					<Form.Item name="email" label="Email">
@@ -61,5 +68,27 @@ const Profile = () => {
 		</>
 	)
 }
+
+export const getServerSideProps = withSession(async ({ req }) => {
+	const access_token = req.session?.auth?.access
+	const isLoggedIn = !!access_token
+	const errors = []
+	const validator = [isLoggedIn]
+	let profileData = {}
+	if (![isLoggedIn].includes(false)) {
+		const [responseProfile] = await axiosGroup([getUserProfile(access_token)])
+		if (responseProfile.status === 200) {
+			const { data } = responseProfile.response.data
+			profileData = data || {}
+		} else {
+			errors.push({
+				message: responseProfile.error.response.data.detail
+			})
+		}
+	}
+	return routeGuard(validator, '/', {
+		props: { errors, profileData }
+	})
+})
 
 export default Profile

@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input } from "antd";
 
 const { useForm } = Form;
 const Register = () => {

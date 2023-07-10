@@ -13,7 +13,7 @@ export default class MyDocument extends Document {
 
 		return {
 			...initialProps,
-			styles: (<>{initialProps.styles}</>)
+			styles: <>{initialProps.styles}</>
 		}
 	}
 
@@ -21,7 +21,9 @@ export default class MyDocument extends Document {
 		return (
 			<Html>
 				<Head>
-					<title>{publicRuntimeConfig.AppName}</title>
+					<>
+						<title>{publicRuntimeConfig.AppName}</title>
+					</>
 				</Head>
 				<body>
 					<Main />

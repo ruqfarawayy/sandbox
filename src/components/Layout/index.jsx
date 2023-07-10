@@ -1,20 +1,41 @@
-import { Layout, FloatButton, theme, Modal, Button, Divider, Form, Checkbox, Input, Row, Typography, Col } from 'antd'
+'use client'
+import {
+	Layout,
+	FloatButton,
+	theme,
+	Modal,
+	Button,
+	Divider,
+	Form,
+	Checkbox,
+	Input,
+	Row,
+	Typography,
+	Col,
+	message,
+	Space,
+	Avatar,
+	Dropdown
+} from 'antd'
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { DatabaseOutlined } from '@ant-design/icons'
+import { DatabaseOutlined, DownOutlined } from '@ant-design/icons'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
+import Link from 'next/link'
 import axios from 'axios'
 import asyncLocalStorage from '@/utils/async-local-storage'
-import { withSession } from '@/utils/session-wrapper'
-import routeGuard from '@/utils/route-guard'
+
+import { useNavbarContext } from '@/context/navbar'
+import errorModal from '@/utils/error-modal'
 const { Title } = Typography
 const ReactJson = dynamic(() => import('react-json-view'), {
 	ssr: false
 })
 const { Content, Header, Footer } = Layout
 const LayoutComponent = ({ children }) => {
+	const { userData, resetUserData } = useNavbarContext()
 	const [collapsed, setCollapsed] = useState(false)
 	const router = useRouter()
 	const [loading, setLoading] = useState(false)
@@ -29,6 +50,30 @@ const LayoutComponent = ({ children }) => {
 	const handleSelectMenu = (menu) => {
 		router.push(menu.key)
 	}
+
+	const items = [
+		{
+			key: '1',
+			label: 'Profile',
+			onClick: () => router.push('/my-profile/profile')
+		},
+		{
+			key: '2',
+			label: 'Ubah Password',
+			onClick: () => router.push('/my-profile/tour')
+		},
+		{
+			key: '3',
+			label: 'Keluar',
+			onClick: async () =>
+				await axios.request({ method: 'post', url: '/api/auth/logout' }).then((res) => {
+					message.info(res.data)
+					resetUserData()
+					router.push('/')
+				})
+		}
+	]
+
 	const handleSubmit = async (values) => {
 		setLoading(true)
 		const { email, password, remember_me } = values
@@ -36,13 +81,9 @@ const LayoutComponent = ({ children }) => {
 			.request({
 				method: 'post',
 				url: '/api/auth/login',
-				data: {
-					email,
-					password
-				}
+				data: { email, password }
 			})
 			.then((res) => {
-				// console.log('?', res)
 				if (res.status === 200) {
 					asyncLocalStorage.setItem('_am', res.data).then(() => {
 						if (!!remember_me) {
@@ -55,12 +96,20 @@ const LayoutComponent = ({ children }) => {
 				}
 			})
 			.catch((err) => {
-				console.log('ini error:', err)
-				return err
+				errorModal(err)
 			})
 			.finally(() => setLoading(false))
 	}
 
+	// console.log('?', userData)
+	useEffect(() => {
+		asyncLocalStorage.getItem('_rm').then((res) => {
+			if (!!res) {
+				form.setFieldValue('email', res)
+				form.setFieldValue('remember_me', true)
+			}
+		})
+	}, [])
 	const loginModal = () => {
 		const instance = modal.info()
 		instance.update({
@@ -148,15 +197,30 @@ const LayoutComponent = ({ children }) => {
 						display: 'flex',
 						justifyContent: 'space-between',
 						alignItems: 'center',
-						background: colorBgContainer
+						background: colorBgContainer,
+						marginTop: '1rem'
 					}}>
 					<div>
-						<Image src="/logo.png" alt="logo" width={100} height={50} />
+						<Link href="/">
+							<Image src="/logo.png" alt="logo" width={100} height={40} />
+						</Link>
 					</div>
 					<div>
-						<Button size="large" shape="round" type="primary" onClick={loginModal}>
-							Login
-						</Button>
+						{userData.isLoggedIn ? (
+							<Space>
+								<Avatar size="large" src={userData.photo} />
+								<Dropdown menu={{ items }} placement="bottomRight" arrow trigger={['click']}>
+									<Button type="text">
+										{userData.username}
+										<DownOutlined />
+									</Button>
+								</Dropdown>
+							</Space>
+						) : (
+							<Button type="primary" shape="round" size="large" onClick={loginModal}>
+								Login
+							</Button>
+						)}
 					</div>
 				</Header>
 				{/* <Sider
